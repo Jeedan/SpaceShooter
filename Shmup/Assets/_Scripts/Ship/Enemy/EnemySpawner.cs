@@ -13,7 +13,7 @@ public class EnemySpawner : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        StartCoroutine(SpawnEnemies());
+        //StartCoroutine(SpawnEnemies());
     }
 
     public void SpawnWave()
@@ -25,13 +25,17 @@ public class EnemySpawner : MonoBehaviour
     IEnumerator SpawnEnemies()
     {
         yield return new WaitForSeconds(1.5f);
+        float randomSpawnHeight = Random.Range(0.05f, 0.85f);
         while (isSpawning)
         {
+
+
             for (int i = 0; i <= spawnAmount; i++)
             {
                 GameObject enemyGO = Instantiate(enemyPrefab);
-
-                float randomSpawnHeight = Random.Range(0.05f, 0.85f);
+                BasicEnemy enemy = enemyGO.GetComponent<BasicEnemy>();
+                enemy.waveOffset =(1-i)* 2.0f; // this works but who knows why 
+                //enemy.waveOffset = (i+1) * 3.141f; // this works no idea why still a little out of sync
 
                 Vector3 spawnPos = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width + 3.0f, Screen.height * randomSpawnHeight, 1.0f));
 

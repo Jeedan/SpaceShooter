@@ -7,7 +7,7 @@ public class ShipTutorialState : IState
 
     GameManager gm;
 
-    public int killsToSpawnNewWave = 2;
+    public int killsToSpawnNewWave = 3;
     private int currentKillCount = 0;
 
     public ShipTutorialState()
@@ -37,19 +37,24 @@ public class ShipTutorialState : IState
     public void OnUpdate()
     {
         // TODO spawn a wave every third kill
+        var totalKillCount = 0;
+        totalKillCount += gm.enemyShipKills;
         currentKillCount = gm.enemyShipKills;
-        if(currentKillCount % 3 == 0 && currentKillCount != 0)
+        if (currentKillCount % killsToSpawnNewWave == 0 && currentKillCount != 0)
         {
-            killsToSpawnNewWave = gm.enemyShipKills + killsToSpawnNewWave;
-            currentKillCount = 0;
+            Debug.Log("kills needed " + killsToSpawnNewWave + " currentKillCount: " + currentKillCount + " total kills: "+ totalKillCount);
+            gm.enemyShipKills = 0;
             gm.StartCoroutine(NewWaveOfEnemies());
-            Debug.Log("Total kills needed " + killsToSpawnNewWave);
+            //   killsToSpawnNewWave = gm.enemyShipKills + 2;
         }
     }
 
     IEnumerator NewWaveOfEnemies()
     {
-        gm.enemySpawner.SpawnWave();
+        if (!gm.enemySpawner.isSpawning)
+        {
+            gm.enemySpawner.SpawnWave();
+        }
         yield return null;
     }
 }

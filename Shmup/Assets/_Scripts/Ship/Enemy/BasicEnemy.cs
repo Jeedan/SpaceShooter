@@ -12,19 +12,25 @@ public class BasicEnemy : MonoBehaviour
 
     LinearMovement linearMover;
 
+    // TODO refactor sine wave
+    public float frequency = 2.0f; // speed of the sine wave
+    public float amplitude = 2.0f; // height of the sine wave
+    public float waveOffset = 0.0f; // offset in the wave
+
+
     // Use this for initialization
     void Start()
     {
         maxHealth = currentHealth;
         linearMover = new LinearMovement();
-        Destroy(gameObject, aliveTime);
+     //   Destroy(gameObject, aliveTime);
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position = linearMover.Move(transform.position, transform.right, -speed);
-        
+        //transform.position = linearMover.Move(transform.position, transform.right, -speed);
+        WaveMove();
     }
    
     public void TakeDamage(float amount)
@@ -42,5 +48,15 @@ public class BasicEnemy : MonoBehaviour
         GameManager gm = GameObject.FindObjectOfType<GameManager>();
         gm.enemyShipKills++;
         Destroy(gameObject);
+    }
+
+    public void WaveMove()
+    {
+        Vector3 dir = transform.right * -speed * Time.deltaTime;
+        Vector3 wave = Vector3.zero;
+        float sineWave = Mathf.Sin(Time.time * frequency + waveOffset);
+        wave.y =  (sineWave ) * amplitude;
+
+        transform.position += dir + wave * Time.deltaTime;
     }
 }
