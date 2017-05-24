@@ -22,7 +22,21 @@ public class GameManager : MonoBehaviour
 
     public ShipController playerShip;
 
-    public int enemyShipKills = 0;
+    public int enemiesInScene = 0;
+
+
+    public GameObject UI_Intro_RootOBJ;
+    public GameObject UI_MainMenu_RootOBJ;
+    public GameObject UI_EnemiesKilled_RootOBJ;
+
+    // tutorial level
+    // if we want to tweak settings in the Unity inspector
+    // set the level as a Serializable field
+    // however we will need to specify exactly what class the state object is when creating it
+    // instead of using an IState interface
+    // because unity does not show interfaces in the inspector
+    [SerializeField]
+    private ShipTutorialState shipTutorialState;
 
     private void InitializeStates()
     {
@@ -30,8 +44,8 @@ public class GameManager : MonoBehaviour
         IState gameMainMenuState = new GameMainMenuState(gameObject);
 
         // tutorial level
-        IState shipTutorialState = new ShipTutorialState(gameObject);
-
+        //  IState shipTutorialState = new ShipTutorialState(gameObject);
+        shipTutorialState = new ShipTutorialState(gameObject);
 
         // add the states to the statemachine 
         AddState(GameStateID.GAME_INTRO_STATE, gameIntroState);
@@ -47,6 +61,15 @@ public class GameManager : MonoBehaviour
         gameStateMachine = new StateMachine();
 
         enemySpawner = GetComponent<EnemySpawner>();
+
+        if (!UI_Intro_RootOBJ.activeInHierarchy)
+        {
+            UI_Intro_RootOBJ.SetActive(true);
+        }
+
+        UI_MainMenu_RootOBJ.SetActive(false);
+        UI_EnemiesKilled_RootOBJ.SetActive(false);
+
     }
 
     // Use this for initialization
@@ -93,6 +116,7 @@ public class GameManager : MonoBehaviour
 
     public void InstantiatePlayerShip()
     {
-        ShipController ship = Instantiate(playerShip);
+        //ShipController ship = Instantiate(playerShip);
+        Instantiate(playerShip);
     }
 }
