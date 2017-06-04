@@ -19,12 +19,14 @@ public class GameIntroState : IState
 
     public void OnEnter()
     {
-        Debug.Log("intro state OnEnter");
+       // Debug.Log("intro state OnEnter");
     }
 
     public void OnExit()
     {
-        Debug.Log("intro state OnExit");
+        //Debug.Log("intro state OnExit");
+
+        gm.UI_Intro_RootOBJ.SetActive(false);
     }
 
     public void OnUpdate()

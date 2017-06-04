@@ -22,6 +22,16 @@ public class ShipController : MonoBehaviour
     // TODO temp weapon 
     private BasicShipWeapon basicWeapon;
 
+
+    //TODO Flash when hit
+    SpriteRenderer shipRenderer;
+    Color originalColor;
+    Color flashColor;
+    public int flashAmount = 3;
+
+    //TODO kill counter
+    public int totalKillCount;
+
     // Use this for initialization
     void Start()
     {
@@ -31,6 +41,8 @@ public class ShipController : MonoBehaviour
         basicWeapon = GetComponent<BasicShipWeapon>();
 
         maxHealth = currentHealth;
+
+        InitialiseShipFlashing();
     }
 
     // Update is called once per frame
@@ -54,7 +66,7 @@ public class ShipController : MonoBehaviour
 
     private void Shoot()
     {
-        basicWeapon.Shoot();
+        basicWeapon.Shoot(gameObject);
     }
 
     private void MoveShip()
@@ -113,9 +125,10 @@ public class ShipController : MonoBehaviour
 
         transform.position = Camera.main.ViewportToWorldPoint(pos);
     }
-    
+
     public void TakeDamage(float amount)
     {
+        StartCoroutine(FlashOnHit());
         currentHealth -= amount;
 
         if (currentHealth <= 0.0f)
@@ -127,6 +140,40 @@ public class ShipController : MonoBehaviour
     public void Die()
     {
         Destroy(gameObject);
+    }
+
+
+    public void ResetHealth()
+    {
+        currentHealth = maxHealth;
+    }
+
+    public void OnEnemyDeath()
+    {
+        totalKillCount += 1;
+        //Debug.Log("enemy death: " + totalKillCount);
+    }
+
+    void InitialiseShipFlashing()
+    {
+        shipRenderer = GetComponentInChildren<SpriteRenderer>();
+        originalColor = shipRenderer.color;
+        flashColor = Color.clear;
+    }
+
+    IEnumerator FlashOnHit()
+    {
+        WaitForSeconds waitDelay = new WaitForSeconds(0.1f);
+
+        for(int i = 0; i < flashAmount; i++)
+        {
+            shipRenderer.color = flashColor;
+            yield return waitDelay;
+            shipRenderer.color = originalColor;
+            yield return waitDelay;
+        }
+
+        yield return null;
     }
 
     public void OnTriggerEnter2D(Collider2D collision)
